@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package message;
+
+import "google/protobuf/timestamp.proto";
+
+/*
+ to get golang context values we're going to use package
+ "google.golang.org/grpc/metadata"
+*/
+
+// service
+service NsiService {
+  rpc ProductCreate(Product) returns (DefaultCreateResponse) {}
+  rpc ProductGet(ProductGetPars) returns (Product) {}
+  rpc ProductList(ProductListPars) returns (ListProducts) {}
+  rpc ProductUpdate(Product) returns (DefaultResponse) {}
+}
+
+// dop params
+message ListParams {
+  int64 page = 1;
+  int64 page_size = 2;
+  // todo
+}
+
+message DefaultResponse {
+  string message = 1;
+}
+
+message DefaultCreateResponse {
+  string id = 1;
+}
+
+
+// entities
+message I18nField {
+  string kz = 1;
+  string en = 2;
+  string ru = 3;
+}
+
+message ProductProperty {
+  string product_id = 1;
+  string model_attr_id = 2;
+  string value = 3;
+  I18nField value_i18n = 4;
+  
+  google.protobuf.Timestamp modified_at = 5; 
+}
+
+message Product {
+	string id      = 1;      
+
+  string category_id = 2;
+  int64 manager_id = 3; 
+	string group_id = 4;
+
+	int64 type        = 5;
+	string code      = 6;     
+	string name         = 7;
+	I18nField name_I18n = 8;
+  string status = 9;
+  bool published = 10;
+  string description = 11;
+  I18nField description_i18n = 12;
+
+  google.protobuf.Timestamp created_at = 13; 
+  google.protobuf.Timestamp modified_at = 14; 
+
+  repeated ProductProperty properties = 15;
+}
+
+message ProductGetPars {
+	string id      = 1;      
+	string code      = 2;     
+
+  bool with_properties = 3;
+}
+
+message ProductListPars {
+  ListParams params = 1;
+
+	repeated string ids      = 2;      
+
+  string category_id = 3;
+  int64 manager_id = 4; 
+	string group_id = 5;
+
+	int64 type        = 6;
+	string code      = 7;     
+  string status = 8;
+  bool published = 9;
+  string search = 10; 
+
+  bool with_properties = 11;
+}
+
+message ListProduct{
+  repeated Product list = 1;
+}
